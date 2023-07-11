@@ -13,7 +13,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       {fontsLoaded ? <><Groups />
-      <StatusBar style="light" backgroundColor="transparent" /></> : <Loading/>}
+      <StatusBar style="light"/></> : <Loading/>}
     </ThemeProvider>
   );
 }

@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { Container, Tittle } from './styles';
+import { Container} from './styles';
+import { Header } from '@components/header';
 
 export default function Groups() {
   return (
     <Container>
-      <Tittle>Grupos</Tittle>
+      <Header />
       <StatusBar style="auto" />
     </Container>
   );
