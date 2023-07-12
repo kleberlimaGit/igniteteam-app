@@ -4,6 +4,7 @@ import Groups from "@screens/Groups";
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from 'styled-components';
 import theme from "./src/theme";
+import NewGroup from "@screens/NewGroup";
 
 export default function App() {
 
@@ -12,7 +13,7 @@ export default function App() {
   });
   return (
     <ThemeProvider theme={theme}>
-      {fontsLoaded ? <><Groups />
+      {fontsLoaded ? <><NewGroup />
       <StatusBar style="light"/></> : <Loading/>}
     </ThemeProvider>
   );
