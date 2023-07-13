@@ -22,7 +22,7 @@ export default function Groups() {
   return (
     <Container>
       <Header />
-      <Highlight title="Turmas" subtitle="Jogue com a sua Turma" />
+      <Highlight title="TEAMS" subtitle="Monte o seu MELHOR time" />
       <FlatList 
         data={groups} 
         keyExtractor={(_item, index) => String(index)}
@@ -32,10 +32,10 @@ export default function Groups() {
         )}
         contentContainerStyle={groups.length === 0 && {flex: 1}}
         ListEmptyComponent={() => (
-          <ListEmpty message="Lista de times vazias."/>
+          <ListEmpty message="Lista de times vazia."/>
         )}
         />
-        <Button title="Cadastrar time" onPress={handleNewGroup}/>
+        <Button title="Crie um time" onPress={handleNewGroup}/>
       <StatusBar style="light" />
     </Container>
   );
