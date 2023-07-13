@@ -6,10 +6,10 @@ interface Props extends TouchableOpacityProps {
 }
 
 
-export function ButtonIcon({}: Props) {
+export function ButtonIcon({type = 'PRIMARY', ...rest}: Props) {
   return (
-    <Container>
-        <Icon name = "home" type ="PRIMARY"/>
+    <Container {...rest}>
+        <Icon name = "home" type ={type}/>
     </Container>
   )
 }
