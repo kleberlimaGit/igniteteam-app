@@ -11,6 +11,11 @@ import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
 import { PlayersCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
+import { useRoute } from "@react-navigation/native";
+
+interface RouteParams {
+  group: string;
+}
 
 export default function Players() {
   const [team, setTeam] = useState("Time A");
@@ -20,11 +25,13 @@ export default function Players() {
     "Ronaldo Fenômeno"
   ]);
 
+  const route = useRoute()
+  const { group } = route.params as RouteParams;  
   return (
     <Container>
       <Header showBackButton />
       <Highlight
-        title="Nome do Time"
+        title={group}
         subtitle="Adicione os jogadores nos times"
       />
       <Form>
