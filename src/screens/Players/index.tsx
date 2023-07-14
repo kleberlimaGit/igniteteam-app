@@ -1,5 +1,5 @@
-import { FlatList } from "react-native";
-import { useState } from "react";
+import { FlatList, Alert } from "react-native";
+import { useState, useEffect } from "react";
 
 import { Header } from "@components/header";
 import { Highlight } from "@components/highlight";
@@ -12,6 +12,14 @@ import { PlayersCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
 import { useRoute } from "@react-navigation/native";
+import { AppError } from "@utils/AppError";
+import {
+  addPlayerByGroup,
+  getPlayerByGroup,
+  getPlayerByGroupAndTeam,
+  playerRemove,
+} from "@storage/players/Players";
+import { PlayerDTO } from "@storage/players/PlayerDTO";
 
 interface RouteParams {
   group: string;
@@ -19,17 +27,74 @@ interface RouteParams {
 
 export default function Players() {
   const [team, setTeam] = useState("Time Principal");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<PlayerDTO[]>([]);
+  const [newPlayerName, setNewPlayerName] = useState("");
 
   const route = useRoute();
   const { group } = route.params as RouteParams;
+
+  async function addPlayer() {
+    if (newPlayerName.trim().length === 0) {
+      return;
+    }
+    const playerDTO: PlayerDTO = { name: newPlayerName, team };
+    try {
+      await addPlayerByGroup(playerDTO, group);
+      setNewPlayerName("");
+      getPlayersByTeam();
+    } catch (error) {
+      if (error instanceof AppError) {
+        return Alert.alert("Cadastrar jogador", error.message);
+      }
+      return Alert.alert(
+        "Error inesperado",
+        "Por favor tente novamente mais tarde."
+      );
+    }
+  }
+
+  async function getPlayersByTeam() {
+    try {
+      const players = await getPlayerByGroupAndTeam(group, team);
+      setPlayers(players);
+    } catch (error) {
+      return Alert.alert(
+        "Error inesperado",
+        "Por favor tente novamente mais tarde."
+      );
+    }
+  }
+
+  async function handleRemovePlayer(playerName: string){
+    try {
+      await playerRemove(playerName, group);
+        getPlayersByTeam();
+    } catch (error) {
+      return Alert.alert(
+              "Error inesperado",
+              "Por favor tente novamente mais tarde."
+            );
+    }
+  }
+
+  useEffect(() => {
+    getPlayersByTeam();
+  }, [team]);
+
   return (
     <Container>
       <Header showBackButton />
       <Highlight title={group} subtitle="Adicione os jogadores no time" />
       <Form>
-        <Input placeholder="Nome do jogador" autoCorrect={false} />
-        <ButtonIcon icon="add" />
+        <Input
+          placeholder="Nome do jogador"
+          autoCorrect={false}
+          value={newPlayerName}
+          onChangeText={setNewPlayerName}
+          onSubmitEditing={addPlayer}
+          returnKeyType="done"
+        />
+        <ButtonIcon icon="add" onPress={addPlayer} />
       </Form>
       <HeaderList>
         <FlatList
@@ -49,7 +114,7 @@ export default function Players() {
       <FlatList
         data={players}
         renderItem={({ item }) => (
-          <PlayersCard name={item} onRemove={() => {}} />
+          <PlayersCard name={item.name} onRemove={() => handleRemovePlayer(item.name)} />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Lista de jogadores vazia." />

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GROUP_COLLECTION } from "@storage/storageConsig";
+import { GROUP_COLLECTION, PLAYER_COLLECTION } from "@storage/storageConsig";
 import { AppError } from "@utils/AppError";
 
 export async function groupGetAll() {
@@ -29,6 +29,17 @@ export async function groupCreate(newsGroup: string) {
       await AsyncStorage.setItem(GROUP_COLLECTION, strorage);
   } catch (error) {
       throw error;
+    }
+  }
+
+  export async function deleteGroupByName(group: string){
+    try {
+      const storageGroups = await groupGetAll();
+      const groups = storageGroups.filter(g => g !== group);
+      await AsyncStorage.setItem(GROUP_COLLECTION, JSON.stringify(groups));
+      await AsyncStorage.removeItem(`${GROUP_COLLECTION}-${group}`);
+    } catch (error) {
+      
     }
   }
   
