@@ -18,29 +18,22 @@ interface RouteParams {
 }
 
 export default function Players() {
-  const [team, setTeam] = useState("Time A");
-  const [players, setPlayers] = useState([
-    "Gabriel",
-    "Neymar",
-    "Ronaldo Fenômeno"
-  ]);
+  const [team, setTeam] = useState("Time Principal");
+  const [players, setPlayers] = useState([]);
 
-  const route = useRoute()
-  const { group } = route.params as RouteParams;  
+  const route = useRoute();
+  const { group } = route.params as RouteParams;
   return (
     <Container>
       <Header showBackButton />
-      <Highlight
-        title={group}
-        subtitle="Adicione os jogadores nos times"
-      />
+      <Highlight title={group} subtitle="Adicione os jogadores no time" />
       <Form>
         <Input placeholder="Nome do jogador" autoCorrect={false} />
         <ButtonIcon icon="add" />
       </Form>
       <HeaderList>
         <FlatList
-          data={["Time A", "Time B"]}
+          data={["Time Principal", "Time Reserva"]}
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <Filter
@@ -62,11 +55,13 @@ export default function Players() {
           <ListEmpty message="Lista de jogadores vazia." />
         )}
         showsVerticalScrollIndicator={false}
-
         //recebe um array condicional primeira posicao é o padrao, mas caso a condicao do segundo array seja verdadeira assume o estilo do segundo array
-        contentContainerStyle={[{paddingBottom: 100}, players.length === 0 && {flex: 1} ]} 
+        contentContainerStyle={[
+          { paddingBottom: 100 },
+          players.length === 0 && { flex: 1 },
+        ]}
       />
-      <Button title="Excluir Time" type="SECONDARY"/>
+      <Button title="Excluir Time" type="SECONDARY" />
     </Container>
   );
 }

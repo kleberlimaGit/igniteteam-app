@@ -13,8 +13,8 @@ ${({theme, isActive}) => isActive && css`
 
 border-radius: 4px;
 margin-right: 12px;
-height: 38px;
-width: 70px;
+height: 45px;
+width: 80px;
 
 align-items:center;
 justify-content: center;
