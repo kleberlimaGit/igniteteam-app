@@ -11,7 +11,7 @@ import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
 import { PlayersCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AppError } from "@utils/AppError";
 import {
   addPlayerByGroup,
@@ -20,6 +20,7 @@ import {
   playerRemove,
 } from "@storage/players/Players";
 import { PlayerDTO } from "@storage/players/PlayerDTO";
+import { deleteGroupByName } from "@storage/group/Group";
 
 interface RouteParams {
   group: string;
@@ -31,6 +32,8 @@ export default function Players() {
   const [newPlayerName, setNewPlayerName] = useState("");
 
   const route = useRoute();
+  const navigation = useNavigation();
+
   const { group } = route.params as RouteParams;
 
   async function addPlayer() {
@@ -65,16 +68,43 @@ export default function Players() {
     }
   }
 
-  async function handleRemovePlayer(playerName: string){
+  async function handleRemovePlayer(playerName: string) {
     try {
-      await playerRemove(playerName, group);
-        getPlayersByTeam();
+      Alert.alert("Excluir jogador", `Deseja remover ${playerName} do ${group}?`, [
+        {
+          text: "Sim",
+          onPress: async () => {
+            await playerRemove(playerName, group);
+            getPlayersByTeam();
+          },
+        },
+        {
+          text: "Não",
+          style: "cancel",
+        },
+      ]);
     } catch (error) {
       return Alert.alert(
-              "Error inesperado",
-              "Por favor tente novamente mais tarde."
-            );
+        "Error inesperado",
+        "Por favor tente novamente mais tarde."
+      );
     }
+  }
+
+  async function handleRemoveTeam() {
+    Alert.alert("Excluir time", `Deseja remover o time ${group} ?`, [
+      {
+        text: "Sim",
+        onPress: async () => {
+          await deleteGroupByName(group);
+          navigation.navigate("groups");
+        },
+      },
+      {
+        text: "Não",
+        style: "cancel",
+      },
+    ]);
   }
 
   useEffect(() => {
@@ -114,7 +144,10 @@ export default function Players() {
       <FlatList
         data={players}
         renderItem={({ item }) => (
-          <PlayersCard name={item.name} onRemove={() => handleRemovePlayer(item.name)} />
+          <PlayersCard
+            name={item.name}
+            onRemove={() => handleRemovePlayer(item.name)}
+          />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Lista de jogadores vazia." />
@@ -126,7 +159,11 @@ export default function Players() {
           players.length === 0 && { flex: 1 },
         ]}
       />
-      <Button title="Excluir Time" type="SECONDARY" />
+      <Button
+        title="Excluir Time"
+        type="SECONDARY"
+        onPress={handleRemoveTeam}
+      />
     </Container>
   );
 }

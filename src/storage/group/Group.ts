@@ -37,7 +37,7 @@ export async function groupCreate(newsGroup: string) {
       const storageGroups = await groupGetAll();
       const groups = storageGroups.filter(g => g !== group);
       await AsyncStorage.setItem(GROUP_COLLECTION, JSON.stringify(groups));
-      await AsyncStorage.removeItem(`${GROUP_COLLECTION}-${group}`);
+      await AsyncStorage.removeItem(`${PLAYER_COLLECTION}-${group}`);
     } catch (error) {
       
     }
